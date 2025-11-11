@@ -160,7 +160,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h1>WebMap</h1>
@@ -191,12 +190,10 @@
             </div>
         </aside>
 
-        <!-- Main Profile Content -->
         <main class="main-content">
             <h2>Your Profile</h2>
             
             <div class="profile-card">
-                <!-- Personal Info Form -->
                 <form id="profile-form" class="p-6 space-y-4">
                     <div>
                         <label for="profile-name" class="form-label">Full Name</label>
@@ -220,21 +217,18 @@
                     </div>
                 </form>
                 
-                <!-- Password Section -->
                 <div class="p-6 border-t border-gray-200 space-y-4">
+                    
                      <div>
-                        <label class="form-label">Password</label>
-                        <input type="password" id="password-display" class="form-input" value="••••••••" disabled>
-                        <!-- <p class="text-xs text-gray-500 mt-1">Password can only be changed, not viewed, for security.</p> -->
-                        <!-- --- UPDATED: Added eye icon --- -->
-                        <div class="relative">
+                         <label class="form-label">Password</label>
+                         <div class="relative">
                              <input type="password" id="password-display-input" class="form-input pr-10" value="••••••••" disabled>
                              <button type="button" id="toggle-password-view" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500">
                                  <i class="fas fa-eye"></i>
                              </button>
                          </div>
                          <p class="text-xs text-gray-500 mt-1">Password is hidden by default. Click the eye to view.</p>
-                    </div>
+                     </div>
                     <div class="flex justify-end">
                         <button type="button" id="change-password-button" class="btn-secondary">Change Password</button>
                     </div>
@@ -243,7 +237,6 @@
         </main>
     </div>
 
-    <!-- Change Password Modal -->
     <div id="password-modal" class="modal-overlay">
         <div class="modal-content">
             <h3 class="text-xl font-semibold mb-4">Change Password</h3>
@@ -279,7 +272,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const API_URL = '';
+            const API_URL = 'https://structure-backend-d6a4.onrender.com';
             const token = localStorage.getItem('access_token');
             
             // --- NEW: Construct absolute URLs ---
@@ -381,8 +374,8 @@
             // Enable save button only if data has changed
             profileForm.addEventListener('input', () => {
                 const hasChanged = nameInput.value !== originalData.name ||
-                                   emailInput.value !== originalData.email ||
-                                   phoneInput.value !== originalData.phone;
+                                       emailInput.value !== originalData.email ||
+                                       phoneInput.value !== originalData.phone;
                 saveButton.disabled = !hasChanged;
             });
 

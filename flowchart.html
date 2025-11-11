@@ -453,9 +453,9 @@
                     <h3 class="text-xl font-semibold mb-4 text-gray-900">AI Structure Refinement</h3>
                     
                     <div id="chat-messages" class="chat-messages">
-                         <div class="flex justify-start">
-                            <span class="ai-message">Hello! I've loaded your project structure. What changes or refinements would you like me to generate? E.g., "Add a 'Careers' section to the 'About Us' menu."</span>
-                        </div>
+                             <div class="flex justify-start">
+                                 <span class="ai-message">Hello! I've loaded your project structure. What changes or refinements would you like me to generate? E.g., "Add a 'Careers' section to the 'About Us' menu."</span>
+                             </div>
                     </div>
                     
                     <div class="chat-input-container">
@@ -484,7 +484,7 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const API_URL = '';
+            const API_URL = 'https://structure-backend-d6a4.onrender.com';
             const token = localStorage.getItem('access_token');
 
             const companyNameEl = document.getElementById('company-node').querySelector('h1');

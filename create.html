@@ -11,7 +11,6 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            /* This dark background makes the page look like a modal overlay */
             background-color: rgba(17, 24, 39, 0.8); /* gray-900 with 80% opacity */
             backdrop-filter: blur(4px);
         }
@@ -27,11 +26,10 @@
 
         <form id="create-form" class="p-6">
             <div class="space-y-5">
-                
                 <div>
                     <label for="model" class="block text-sm font-medium text-gray-700 mb-1">Choose your model</label>
                     <select id="model" name="model" required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="gemini">Gemini 2.5 Flash</option>
                         <option value="openai">GPT-4o mini</option>
                     </select>
@@ -40,29 +38,29 @@
                 <div>
                     <label for="company_name" class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
                     <input type="text" id="company_name" name="company_name" required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="e.g., Acme Inc.">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="e.g., Acme Inc.">
                 </div>
 
                 <div>
                     <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
                     <input type="text" id="category" name="category" required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="e.g., E-commerce, SaaS, Portfolio">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="e.g., E-commerce, SaaS, Portfolio">
                 </div>
                 
                 <div>
                     <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
-                    <textarea id="description" name="description" rows="3" 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="A brief explanation of what the company does, its main product, or its target audience."></textarea>
+                    <textarea id="description" name="description" rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="A brief explanation of what the company does, its main product, or its target audience."></textarea>
                 </div>
+                
                 <div>
-                    <!-- --- UPDATED: Label and max value --- -->
                     <label for="num_pages" class="block text-sm font-medium text-gray-700 mb-1">Number of Menu Pages</label>
                     <input type="number" id="num_pages" name="num_pages" required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="5" value="5" min="1" max="100">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="5" value="5" min="1" max="100">
                 </div>
             </div>
 
@@ -70,11 +68,11 @@
 
             <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
                 <a href="#" id="cancel-button"
-                   class="px-4 py-2 bg-gray-100 text-gray-800 rounded-md font-medium hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    class="px-4 py-2 bg-gray-100 text-gray-800 rounded-md font-medium hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300">
                     Cancel
                 </a>
                 <button type="submit" id="generate-button"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    class="px-4 py-2 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                     Generate
                 </button>
             </div>
@@ -83,48 +81,37 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- FIX FOR PREVIEW ---
-            if (!window.location.protocol.startsWith('http')) {
-                console.warn('Preview mode: Authentication and form logic disabled.');
-                const cancelButton = document.getElementById('cancel-button');
-                cancelButton.href = "#";
-                return;
-            }
-            // --- END OF FIX ---
 
+            // ✅ Set your backend URL hosted on Render
+            const API_URL = 'https://structure-backend-d6a4.onrender.com';
 
-            const API_URL = '';
             const token = localStorage.getItem('access_token');
-
             const createForm = document.getElementById('create-form');
             const generateButton = document.getElementById('generate-button');
             const errorEl = document.getElementById('create-error');
             const cancelButton = document.getElementById('cancel-button');
 
-            // --- Construct Absolute URLs ---
+            // Dynamically build URLs for navigation
             const currentPath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
             const loginUrl = `${currentPath}/index.html`;
             const dashboardUrl = `${currentPath}/dashboard.html`;
 
-            // Set the cancel button's href dynamically
             cancelButton.href = dashboardUrl;
 
-            // --- 1. Authentication Check ---
+            // Redirect to login if not authenticated
             if (!token) {
                 window.location.href = loginUrl;
-                return; 
+                return;
             }
 
-            // --- 2. Form Submission Logic ---
+            // ✅ Handle Form Submission
             createForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                errorEl.textContent = ''; // Clear old errors
+                errorEl.textContent = '';
 
-                // Show loading state
                 generateButton.disabled = true;
                 generateButton.textContent = 'Generating...';
-                cancelButton.style.pointerEvents = 'none'; // Disable cancel
+                cancelButton.style.pointerEvents = 'none';
 
                 const formData = new FormData(createForm);
                 const data = {
@@ -150,24 +137,20 @@
                         throw new Error(result.error || 'Failed to generate project.');
                     }
 
-                    // SUCCESS!
                     const newProject = await response.json();
-                    
-                    // Construct the URL for the new flowchart page
+
+                    // Redirect to flowchart page
                     const flowchartUrl = `${currentPath}/flowchart.html?id=${newProject.id}`;
-            
-                    // Redirect to the new flowchart page
-                    window.location.href = flowchartUrl; 
+                    window.location.href = flowchartUrl;
 
                 } catch (error) {
-                    // Show error message
                     errorEl.textContent = error.message;
-                    // Restore button
                     generateButton.disabled = false;
                     generateButton.textContent = 'Generate';
                     cancelButton.style.pointerEvents = 'auto';
                 }
             });
         });
-    </script></body>
+    </script>
+</body>
 </html>
