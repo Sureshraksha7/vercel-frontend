@@ -11,7 +11,7 @@
     <style>
         body { font-family: 'Poppins', sans-serif; }
         .graphic-bg {
-            background-image: url('assets/bg.png'); /* Corrected path */
+            background-image: url('assets/bg.png');
             background-size: cover;
             background-position: center;
             position: relative;
@@ -137,6 +137,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    const API_URL = 'https://structure-backend-d6a4.onrender.com';
     const loginView = document.getElementById('login-view');
     const registerView = document.getElementById('register-view');
     const showRegisterBtn = document.getElementById('show-register');
@@ -148,13 +149,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerSuccessEl = document.getElementById('register-success');
 
     // Toggle Views
-    showRegisterBtn.addEventListener('click', (e) => {
+    showRegisterBtn.addEventListener('click', e => {
         e.preventDefault();
         loginView.classList.add('hidden');
         registerView.classList.remove('hidden');
         clearMessages();
     });
-    showLoginBtn.addEventListener('click', (e) => {
+    showLoginBtn.addEventListener('click', e => {
         e.preventDefault();
         registerView.classList.add('hidden');
         loginView.classList.remove('hidden');
@@ -167,36 +168,8 @@ document.addEventListener('DOMContentLoaded', () => {
         registerSuccessEl.textContent = '';
     }
 
-    const API_URL = 'https://structure-backend-d6a4.onrender.com';
-
-    // Registration
-    registerForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        clearMessages();
-        const data = Object.fromEntries(new FormData(registerForm).entries());
-        try {
-            const res = await fetch(`${API_URL}/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || 'Server might be waking up. Try again.');
-            }
-            registerSuccessEl.textContent = 'Registration successful! Redirecting to login...';
-            registerForm.reset();
-            setTimeout(() => {
-                registerView.classList.add('hidden');
-                loginView.classList.remove('hidden');
-            }, 2000);
-        } catch (err) {
-            registerErrorEl.textContent = err.message;
-        }
-    });
-
-    // Login
-    loginForm.addEventListener('submit', async (e) => {
+    // LOGIN
+    loginForm.addEventListener('submit', async e => {
         e.preventDefault();
         clearMessages();
         const data = Object.fromEntries(new FormData(loginForm).entries());
@@ -206,18 +179,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || 'Server might be waking up. Try again.');
-            }
             const result = await res.json();
+            if (!res.ok) throw new Error(result.error || 'Login failed');
             localStorage.setItem('access_token', result.access_token);
-            loginErrorEl.textContent = 'Login successful! Redirecting...';
-            loginErrorEl.classList.add('text-green-600');
-            setTimeout(() => window.location.href = '/dashboard.html', 1000);
+            window.location.href = '/dashboard.html';
         } catch (err) {
             loginErrorEl.textContent = err.message;
-            loginErrorEl.classList.add('text-red-600');
+        }
+    });
+
+    // REGISTER
+    registerForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        clearMessages();
+        const data = Object.fromEntries(new FormData(registerForm).entries());
+        try {
+            const res = await fetch(`${API_URL}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (!res.ok) throw new Error(result.error || 'Registration failed');
+            registerSuccessEl.textContent = 'Registration successful! Redirecting to login...';
+            registerForm.reset();
+            setTimeout(() => {
+                registerView.classList.add('hidden');
+                loginView.classList.remove('hidden');
+            }, 2000);
+        } catch (err) {
+            registerErrorEl.textContent = err.message;
         }
     });
 });
