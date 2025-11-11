@@ -82,7 +82,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            // ✅ Set your backend URL hosted on Render
+            // ✅ Render backend URL
             const API_URL = 'https://structure-backend-d6a4.onrender.com';
 
             const token = localStorage.getItem('access_token');
@@ -91,20 +91,14 @@
             const errorEl = document.getElementById('create-error');
             const cancelButton = document.getElementById('cancel-button');
 
-            // Dynamically build URLs for navigation
-            const currentPath = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
-            const loginUrl = `${currentPath}/index.html`;
-            const dashboardUrl = `${currentPath}/dashboard.html`;
-
-            cancelButton.href = dashboardUrl;
-
-            // Redirect to login if not authenticated
+            // Redirect to login if token missing
             if (!token) {
-                window.location.href = loginUrl;
+                window.location.href = 'index.html';
                 return;
             }
 
-            // ✅ Handle Form Submission
+            cancelButton.href = 'dashboard.html';
+
             createForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 errorEl.textContent = '';
@@ -140,11 +134,10 @@
                     const newProject = await response.json();
 
                     // Redirect to flowchart page
-                    const flowchartUrl = `${currentPath}/flowchart.html?id=${newProject.id}`;
-                    window.location.href = flowchartUrl;
+                    window.location.href = `flowchart.html?id=${newProject.id}`;
 
-                } catch (error) {
-                    errorEl.textContent = error.message;
+                } catch (err) {
+                    errorEl.textContent = err.message;
                     generateButton.disabled = false;
                     generateButton.textContent = 'Generate';
                     cancelButton.style.pointerEvents = 'auto';
