@@ -81,22 +81,20 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
-            // ✅ Render backend URL
             const API_URL = 'https://structure-backend-d6a4.onrender.com';
-
             const token = localStorage.getItem('access_token');
             const createForm = document.getElementById('create-form');
             const generateButton = document.getElementById('generate-button');
             const errorEl = document.getElementById('create-error');
             const cancelButton = document.getElementById('cancel-button');
 
-            // Redirect to login if token missing
+            // Redirect to login page if token is missing
             if (!token) {
                 window.location.href = 'index.html';
                 return;
             }
 
+            // Cancel button redirects to dashboard
             cancelButton.href = 'dashboard.html';
 
             createForm.addEventListener('submit', async (e) => {
@@ -133,7 +131,7 @@
 
                     const newProject = await response.json();
 
-                    // Redirect to flowchart page
+                    // Redirect to flowchart page after successful creation
                     window.location.href = `flowchart.html?id=${newProject.id}`;
 
                 } catch (err) {
