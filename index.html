@@ -11,7 +11,7 @@
     <style>
         body { font-family: 'Poppins', sans-serif; }
         .graphic-bg {
-            background-image: url('assets/ChatGPT_Image_Nov_7_2025_03_04_05_PM.png');
+            background-image: url('bg.png'); /* renamed image for Vercel */
             background-size: cover;
             background-position: center;
             position: relative;
@@ -147,15 +147,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerErrorEl = document.getElementById('register-error');
     const registerSuccessEl = document.getElementById('register-success');
 
-    const API_URL = 'https://structure-backend-d6a4.onrender.com';
-
-    showRegisterBtn.addEventListener('click', e => {
+    // Toggle Views
+    showRegisterBtn.addEventListener('click', (e) => {
         e.preventDefault();
         loginView.classList.add('hidden');
         registerView.classList.remove('hidden');
         clearMessages();
     });
-    showLoginBtn.addEventListener('click', e => {
+    showLoginBtn.addEventListener('click', (e) => {
         e.preventDefault();
         registerView.classList.add('hidden');
         loginView.classList.remove('hidden');
@@ -168,7 +167,10 @@ document.addEventListener('DOMContentLoaded', () => {
         registerSuccessEl.textContent = '';
     }
 
-    registerForm.addEventListener('submit', async e => {
+    const API_URL = 'https://structure-backend-d6a4.onrender.com';
+
+    // Registration
+    registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         clearMessages();
         const data = Object.fromEntries(new FormData(registerForm).entries());
@@ -179,22 +181,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(data)
             });
             if (!res.ok) {
-                const errorResult = await res.json().catch(() => ({}));
-                throw new Error(errorResult.error || 'Server might be waking up. Try again.');
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || 'Server might be waking up. Try again.');
             }
-            registerSuccessEl.textContent = 'Registration successful! Redirecting...';
+            registerSuccessEl.textContent = 'Registration successful! Redirecting to login...';
             registerForm.reset();
             setTimeout(() => {
                 registerView.classList.add('hidden');
                 loginView.classList.remove('hidden');
-                clearMessages();
             }, 2000);
         } catch (err) {
             registerErrorEl.textContent = err.message;
         }
     });
 
-    loginForm.addEventListener('submit', async e => {
+    // Login
+    loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         clearMessages();
         const data = Object.fromEntries(new FormData(loginForm).entries());
@@ -205,16 +207,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(data)
             });
             if (!res.ok) {
-                const errorResult = await res.json().catch(() => ({}));
-                throw new Error(errorResult.error || 'Server might be waking up. Try again.');
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || 'Server might be waking up. Try again.');
             }
             const result = await res.json();
             localStorage.setItem('access_token', result.access_token);
             loginErrorEl.textContent = 'Login successful! Redirecting...';
             loginErrorEl.classList.add('text-green-600');
-            setTimeout(() => window.location.href = 'dashboard.html', 1000);
+            setTimeout(() => window.location.href = '/dashboard.html', 1000);
         } catch (err) {
             loginErrorEl.textContent = err.message;
+            loginErrorEl.classList.add('text-red-600');
         }
     });
 });
