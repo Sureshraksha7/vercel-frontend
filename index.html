@@ -179,8 +179,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || 'Login failed');
+            }
+
             const result = await res.json();
-            if (!res.ok) throw new Error(result.error || 'Login failed');
             localStorage.setItem('access_token', result.access_token);
             window.location.href = '/dashboard.html';
         } catch (err) {
@@ -199,8 +204,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-            const result = await res.json();
-            if (!res.ok) throw new Error(result.error || 'Registration failed');
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || 'Registration failed');
+            }
+
             registerSuccessEl.textContent = 'Registration successful! Redirecting to login...';
             registerForm.reset();
             setTimeout(() => {
@@ -215,4 +224,3 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-
