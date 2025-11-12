@@ -148,6 +148,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerErrorEl = document.getElementById('register-error');
     const registerSuccessEl = document.getElementById('register-success');
 
+    // Redirect to dashboard if token exists
+    const token = localStorage.getItem('access_token');
+    if(token) {
+        window.location.href = './dashboard.html';
+    }
+
     // Toggle Views
     showRegisterBtn.addEventListener('click', e => {
         e.preventDefault();
@@ -187,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const result = await res.json();
             localStorage.setItem('access_token', result.access_token);
-            window.location.href = '/dashboard.html';
+            window.location.href = './dashboard.html';
         } catch (err) {
             loginErrorEl.textContent = err.message;
         }
